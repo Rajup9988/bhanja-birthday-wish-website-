@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Babu!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --dark: #2d3436;
+            --light: #f7f1e3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: var(--dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- INTRO SCREEN --- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(180deg, #e0c3fc 0%, #c2e9fb 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .intro-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .intro-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+        .intro-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .intro-subtitle {
+            font-size: 1.2rem;
+            color: white;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-bottom: 3rem;
+            font-weight: bold;
+        }
+
+        .btn-intro {
+            background: white;
+            color: #a18cd1;
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            animation: pulse 1.5s infinite;
+        }
+        .btn-intro:hover { transform: scale(1.05); }
+
+        /* --- SECTIONS --- */
+        #main-content { display: none; opacity: 0; transition: opacity 1s ease-in; }
+        #view-message { display: block; }
+        #view-gallery { display: none; opacity: 0; transition: opacity 0.5s ease-in; }
+
+        header {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(to right, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            border-bottom-left-radius: 50% 20px;
+            border-bottom-right-radius: 50% 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #fff;
+            font-weight: 700;
+            background: rgba(0,0,0,0.1);
+            padding: 5px 20px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+
+        .message-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .message-container::before {
+            content: '👑';
+            font-size: 3rem;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .message-text { font-size: 1.3rem; line-height: 1.6; color: #555; }
+        .highlight { color: var(--primary); font-weight: bold; }
+
+        /* Buttons */
+        .btn-wish {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            margin: 15px 0;
+            display: inline-block;
+        }
+
+        .btn-next {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s;
+        }
+        .btn-next:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: scale(1.03) rotate(1deg); }
+        .card img { width: 100%; height: 350px; object-fit: cover; border-radius: 10px; }
+        .caption { text-align: center; font-family: 'Fredoka One', cursive; color: #888; margin-top: 10px; }
+
+        footer { text-align: center; padding: 2rem; color: #888; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .gallery { grid-template-columns: 1fr; padding: 1rem; }
+            .card img { height: auto; max-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="intro-circle">
+            <img src="babu2.png" alt="Birthday Boy"> 
+        </div>
+        <h1 class="intro-title">Happy 2nd Birthday!</h1>
+        <div class="intro-subtitle">Mere Pyaare Bhanje ko Janamdin Mubarak! ❤️</div>
+        
+        <button class="btn-intro" onclick="goToMessage()">Continue &nbsp; <i class="bi bi-arrow-right-circle-fill"></i></button>
+    </div>
+
+    <div id="main-content">
+        
+        <div id="view-message">
+            <header>
+                <div id="confetti-origin"></div>
+                <h1>Happy Birthday!</h1>
+                <div class="subtitle">Turning 2 Years Old Today! 🎂</div>
+            </header>
+
+            <div class="message-container">
+                <p class="message-text">
+                    Happy Birthday <span class="highlight">Meri Jaan!</span> ❤️<br><br>
+                    My dearest nephew (Bhanja), watching you grow these past two years has been the greatest joy. 
+                    You are our little sunshine, full of smiles and cuteness.
+                    <br><br>
+                    May your life be as sweet as cake and as colorful as balloons. 
+                    Keep smiling and spreading happiness!
+                    <br><br>
+                    <b>Lots of Love, Mamu & Family</b>
+                </p>
+                
+                <button class="btn-wish" onclick="celebrate()">Send Love 💖</button>
+
+                <button class="btn-next" onclick="goToGallery()">
+                    Continue to Photos <i class="bi bi-images"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="view-gallery">
+            <header>
+                <h1>Memories 📸</h1>
+                <div class="subtitle">Look at you growing up!</div>
+            </header>
+
+            <div class="gallery">
+                <div class="card"><img src="babu1.jpeg" alt="Birthday Boy"><div class="caption">Cutie Pie 🌸</div></div>
+                <div class="card"><img src="babu2.png" alt="Baby"><div class="caption">Those Eyes! 👀</div></div>
+                <div class="card"><img src="babu3.jpeg" alt="With Mom"><div class="caption">Mummy's Boy ❤️</div></div>
+                <div class="card"><img src="babu4.jpeg" alt="Love"><div class="caption">Pure Love ✨</div></div>
+                <div class="card"><img src="babu5.jpeg" alt="Fun"><div class="caption">Little Rockstar 🎸</div></div>
+                <div class="card"><img src="babu6.jpeg" alt="Sweet"><div class="caption">My Betu 🍬</div></div>
+            </div>
+
+            <footer>Made with ❤️ by your Mamu</footer>
+        </div>
+
+    </div>
+
+    <audio id="birthday-song" src="birthady song.mp3" loop></audio>
+
+    <script>
+        // 1. Intro -> Message (Updated to play song)
+        function goToMessage() {
+            var intro = document.getElementById('intro-screen');
+            var main = document.getElementById('main-content');
+            var song = document.getElementById('birthday-song');
+            
+            // Try to play the song when user clicks continue
+            song.play().catch(function(error) {
+                console.log("Audio play failed: " + error);
+                alert("Please click anywhere on the screen to start music!");
+            });
+
+            intro.style.opacity = '0';
+            setTimeout(function() {
+                intro.style.display = 'none';
+                main.style.display = 'block';
+                setTimeout(function() { main.style.opacity = '1'; }, 50);
+            }, 800);
+        }
+
+        // 2. Message -> Gallery
+        function goToGallery() {
+            var msgView = document.getElementById('view-message');
+            var galView = document.getElementById('view-gallery');
+            
+            // Fade out Message View
+            msgView.style.opacity = '0';
+            
+            // Switch to Gallery View
+            setTimeout(function() {
+                msgView.style.display = 'none';
+                galView.style.display = 'block';
+                
+                // Scroll to top and Fade In
+                window.scrollTo(0,0);
+                setTimeout(function() { 
+                    galView.style.opacity = '1'; 
+                    celebrate(); // Pop confetti again on gallery load
+                }, 50);
+            }, 500);
+        }
+
+        // Confetti Function
+        function celebrate() {
+            var duration = 3000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            var random = function(min, max) { return Math.random() * (max - min) + min; };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
